@@ -6,13 +6,13 @@ import type { NextRequest } from 'next/server';
 
 export async function DELETE(
   request: NextRequest,
-  context: Promise<{ params: { [key: string]: string } }>
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
-    const { params } = await context;
+    const { taskId } = await params; // ✅ Await params properly
+
     const session = await auth();
     if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
-    const { taskId } = params;
     await Connect();
     await Task.findByIdAndDelete(taskId);
 
@@ -21,18 +21,22 @@ export async function DELETE(
 
 export async function PUT(
   request: NextRequest,
-  context: Promise<{ params: { [key: string]: string } }>
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
-    const { params } = await context;
+    const { taskId } = await params; // ✅ Await params properly
+
     const session = await auth();
     if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
-    const { taskId } = params;
     const body = await request.json();
     const { title, description, status } = body;
 
     await Connect();
-    const task = await Task.findByIdAndUpdate(taskId, { title, description, status }, { new: true });
+    const task = await Task.findByIdAndUpdate(
+      taskId,
+      { title, description, status },
+      { new: true }
+    );
 
     return NextResponse.json({ task });
 }

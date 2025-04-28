@@ -3,15 +3,16 @@ import { Connect } from '@/Utils/Connect';
 import Task from '@/models/Task';
 import { auth } from '@/auth';
 
+// 🛠 Corrected: context is NOT a Promise. params IS a Promise
 export async function POST(
   req: NextRequest,
-  context: Promise<{ params: { projectId: string } }>
+  { params }: { params: Promise<{ projectId: string }> }
 ) {
-  const { params } = await context;
+  const { projectId } = await params; // ✅ Await params properly
+
   const session = await auth();
   if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
-  const { projectId } = params;
   const { title, description } = await req.json();
 
   await Connect();
@@ -29,13 +30,13 @@ export async function POST(
 
 export async function GET(
   req: NextRequest,
-  context: Promise<{ params: { projectId: string } }>
+  { params }: { params: Promise<{ projectId: string }> }
 ) {
-  const { params } = await context;
+  const { projectId } = await params; // ✅ Await params properly
+
   const session = await auth();
   if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
-  const { projectId } = params;
   await Connect();
 
   const tasks = await Task.find({ projectId });
