@@ -3,34 +3,28 @@ import { Connect } from '@/Utils/Connect';
 import Task from '@/models/Task';
 import { auth } from '@/auth';
 
-export async function DELETE(req: Request, { params }: { params: { projectId: string; taskId: string } }) {
+export async function DELETE(request: Request, context: { params: { projectId: string; taskId: string } }) {
+  const session = await auth();
+  if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
-    const session = await auth();
+  const { taskId } = context.params;
+  await Connect();
 
-    if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  await Task.findByIdAndDelete(taskId);
 
-    const { taskId } = params;
-
-    await Connect();
-
-    await Task.findByIdAndDelete(taskId);
-
-    return NextResponse.json({ message: 'Task deleted successfully' });
-    
-
+  return NextResponse.json({ message: 'Task deleted successfully' });
 }
 
+export async function PUT(request: Request, context: { params: { projectId: string; taskId: string } }) {
+  const session = await auth();
+  if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
-export async function PUT(req: Request, { params }: { params: { projectId: string; taskId: string } }) {
-    const session = await auth();
-    if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  const { taskId } = context.params;
+  const { title, description, status } = await request.json();
 
-    const { taskId } = params;
-    const { title, description, status } = await req.json();
+  await Connect();
 
-    await Connect();
+  const task = await Task.findByIdAndUpdate(taskId, { title, description, status }, { new: true });
 
-    const task = await Task.findByIdAndUpdate(taskId, { title, description, status }, { new: true });
-
-    return NextResponse.json({ task });
+  return NextResponse.json({ task });
 }
