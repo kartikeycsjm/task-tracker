@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LogIn } from '../login/action';
+
 export default function RegisterPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -11,8 +12,8 @@ export default function RegisterPage() {
     password: '',
     country: '',
   });
-
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // new loading state
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,6 +21,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true); // start loading
 
     try {
       const res = await fetch('/api/register', {
@@ -33,12 +35,15 @@ export default function RegisterPage() {
         throw new Error(errorData.message || 'Something went wrong');
       }
 
-      await LogIn(formData.email,formData.password)
+      await LogIn(formData.email, formData.password);
       router.push('/');
     } catch (err: any) {
       setError(err.message);
+    } finally {
+      setLoading(false); // stop loading
     }
   };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-full max-w-md">
@@ -81,9 +86,10 @@ export default function RegisterPage() {
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
+          disabled={loading} // disable while loading
         >
-          Register
+          {loading ? 'Registering...' : 'Register'}
         </button>
       </form>
     </div>

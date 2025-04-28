@@ -2,10 +2,12 @@
 import { useState } from 'react';
 import { LogIn } from './action';
 import { useRouter } from 'next/navigation';
+
 export default function LoginPage() {
-  let router=useRouter()
+  const router = useRouter();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // new loading state
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -13,14 +15,20 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true); // start loading
 
-    const res = await LogIn(formData.email,formData.password);
+    try {
+      const res = await LogIn(formData.email, formData.password);
 
-    if (res.status!='success'){
-        setError(res.error)
-    }
-    else{
-      router.push('/')
+      if (res.status !== 'success') {
+        setError(res.error);
+      } else {
+        router.push('/');
+      }
+    } catch (err) {
+      setError('Something went wrong.');
+    } finally {
+      setLoading(false); // stop loading
     }
   };
 
@@ -50,9 +58,10 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
+          disabled={loading} // disable button while loading
         >
-          Login
+          {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
     </div>
