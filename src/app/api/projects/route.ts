@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { Connect } from '@/Utils/Connect';
 import Project from '@/models/Project';
 import { auth } from '@/auth';
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 

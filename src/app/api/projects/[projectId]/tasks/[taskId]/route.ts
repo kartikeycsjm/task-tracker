@@ -6,8 +6,9 @@ import type { NextRequest } from 'next/server';
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { projectId: string; taskId: string } }
+  context: Promise<{ params: { [key: string]: string } }>
 ) {
+    const { params } = await context;
     const session = await auth();
     if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
@@ -20,8 +21,9 @@ export async function DELETE(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { projectId: string; taskId: string } }
+  context: Promise<{ params: { [key: string]: string } }>
 ) {
+    const { params } = await context;
     const session = await auth();
     if (!session) return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
 
