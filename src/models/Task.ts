@@ -6,6 +6,7 @@ const taskSchema = new Schema({
   status: { type: String, enum: ['Pending', 'Completed'], default: 'Pending' },
   projectId: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
+  completedAt: { type: Date }, // NEW FIELD
 });
 
 const Task = models.Task || mongoose.model('Task', taskSchema);

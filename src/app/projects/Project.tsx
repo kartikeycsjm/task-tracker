@@ -17,6 +17,8 @@ export default function ProjectsPage() {
     const fetchProjects = async () => {
       const res = await fetch('/api/projects');
       const data = await res.json();
+      console.log(data);
+      
       setProjects(data.projects);
     };
     fetchProjects();
@@ -58,12 +60,16 @@ export default function ProjectsPage() {
           <li
             key={project._id}
             onClick={() => router.push(`/projects/${project._id}`)}
-            className="border p-4 rounded cursor-pointer hover:bg-gray-100"
+            className="border p-4 rounded 
+            cursor-pointer hover:bg-gray-100"
           >
             {project.title}
           </li>
         ))}
       </ul>
+      <p className='text-center mt-5 font-light'>
+        Click on project and read, add task, update and delete.
+        </p>
     </div>
   );
 }

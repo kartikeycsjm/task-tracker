@@ -8,6 +8,8 @@ interface Task {
   title: string;
   description: string;
   status: string;
+  createdAt: string;
+  completedAt?: string; 
 }
 
 export default function ProjectDetails() {
@@ -22,6 +24,8 @@ export default function ProjectDetails() {
       const res = await fetch(`/api/projects/${projectId}/tasks`);
       const data = await res.json();
       setTasks(data.tasks);
+      console.log(data);
+
     };
     fetchTasks();
   }, [projectId]);
@@ -107,6 +111,14 @@ export default function ProjectDetails() {
               <h3 className="font-bold">{task.title}</h3>
               <p>{task.description}</p>
               <p className="text-sm text-gray-500">Status: {task.status}</p>
+              <p className="text-sm text-gray-400">
+                Created At: {new Date(task.createdAt).toLocaleString()}
+              </p>
+              {task.status === 'Completed' && task.completedAt && (
+                <p className="text-sm text-green-500">
+                  Completed At: {new Date(task.completedAt).toLocaleString()}
+                </p>
+              )}
             </div>
             <div className="flex gap-2">
               <button
