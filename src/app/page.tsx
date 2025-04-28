@@ -5,7 +5,10 @@ const Homepage = async () => {
   const session = await auth();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-400 to-purple-500 text-white">
+    <div className="flex flex-col items-center 
+    justify-center min-h-screen 
+    bg-gradient-to-r from-blue-400 to-purple-500 
+    text-white">
       <h1 className="text-5xl font-bold mb-6">Task Tracker</h1>
       <p className="text-xl mb-8 text-center max-w-xl">
         Manage your projects and tasks efficiently. Track your progress, stay organized,
