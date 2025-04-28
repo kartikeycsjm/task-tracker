@@ -11,7 +11,6 @@ interface Task {
   createdAt: string;
   completedAt?: string; 
 }
-
 export default function ProjectDetails() {
   const { projectId } = useParams();
   const [tasks, setTasks] = useState<Task[]>([]);
